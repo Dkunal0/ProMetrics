@@ -1,3 +1,2 @@
-// API base URL. Local development defaults to localhost.
-// Before deployment, replace the URL below with your deployed backend URL.
-window.API_BASE = "http://localhost:5000";
+// API base URL for the deployed ProMetrics backend.
+window.API_BASE = "https://prometrics.onrender.com";
