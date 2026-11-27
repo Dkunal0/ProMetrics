@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>ProMetrics Login</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+
+  min-height:100vh;
+
+  display:flex;
+  justify-content:center;
+  align-items:center;
+
+  font-family:'Segoe UI',sans-serif;
+
+  position:relative;
+
+  overflow:hidden;
+}
+
+/* BACKGROUND IMAGE */
+
+body::before{
+
+  content:"";
+
+  position:absolute;
+
+  inset:0;
+
+  background-image:
+linear-gradient(
+  rgba(15,23,42,0.72),
+  rgba(15,23,42,0.78)
+),
+url("./team.jpg");
+
+background-size: cover;
+background-position: center;
+background-repeat: no-repeat;
+
+  z-index:-2;
+}
+
+/* BLUR EFFECT */
+
+body::after{
+
+  content:"";
+
+  position:absolute;
+
+  inset:0;
+
+  backdrop-filter:blur(3px);
+
+  z-index:-1;
+}
+
+/* CARD */
+
+.auth-card{
+
+  width:430px;
+
+  background:
+  rgba(15,23,42,0.62);
+
+  border:
+  1px solid rgba(255,255,255,0.12);
+
+  backdrop-filter:blur(20px);
+
+  border-radius:28px;
+
+  padding:42px;
+
+  box-shadow:
+  0 15px 45px rgba(0,0,0,0.35);
+
+  color:white;
+
+  animation:fadeUp 0.7s ease;
+}
+
+/* ANIMATION */
+
+@keyframes fadeUp{
+
+  from{
+    opacity:0;
+    transform:translateY(30px);
+  }
+
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+/* LOGO */
+
+.logo{
+
+  display:flex;
+  align-items:center;
+  gap:12px;
+
+  font-size:34px;
+  font-weight:700;
+
+  margin-bottom:12px;
+}
+
+.logo span{
+  color:#818cf8;
+}
+
+/* TEXT */
+
+.auth-card p{
+
+  color:#cbd5e1;
+
+  margin-bottom:32px;
+
+  line-height:1.5;
+}
+
+/* INPUTS */
+
+.auth-card input{
+
+  width:100%;
+
+  padding:15px 18px;
+
+  margin-bottom:18px;
+
+  border-radius:16px;
+
+  border:1px solid rgba(255,255,255,0.1);
+
+  background:
+  rgba(15,23,42,0.75);
+
+  color:white;
+
+  font-size:15px;
+
+  outline:none;
+
+  transition:0.25s;
+}
+
+.auth-card input::placeholder{
+  color:#94a3b8;
+}
+
+.auth-card input:focus{
+
+  border-color:#6366f1;
+
+  box-shadow:
+  0 0 0 4px rgba(99,102,241,0.2);
+}
+
+/* BUTTON */
+
+.auth-card button{
+
+  width:100%;
+
+  padding:15px;
+
+  border:none;
+
+  border-radius:16px;
+
+  background:
+  linear-gradient(
+    135deg,
+    #6366f1,
+    #8b5cf6
+  );
+
+  color:white;
+
+  font-size:16px;
+  font-weight:600;
+
+  cursor:pointer;
+
+  transition:0.3s;
+}
+
+.auth-card button:hover{
+
+  transform:translateY(-3px);
+
+  box-shadow:
+  0 10px 25px rgba(99,102,241,0.4);
+}
+
+/* FOOTER */
+
+.footer{
+
+  margin-top:24px;
+
+  text-align:center;
+
+  color:#cbd5e1;
+}
+
+.footer a{
+
+  color:#a5b4fc;
+
+  text-decoration:none;
+
+  font-weight:600;
+}
+
+.footer a:hover{
+  text-decoration:underline;
+}
+
+/* MOBILE */
+
+@media(max-width:500px){
+
+  .auth-card{
+
+    width:92%;
+
+    padding:30px 24px;
+  }
+
+  .logo{
+    font-size:28px;
+  }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="auth-card">
+
+  <div class="logo">
+    ⚡ <span>ProMetrics</span>
+  </div>
+
+  <p>Track your productivity like a pro.</p>
+
+  <input
+    id="email"
+    type="email"
+    placeholder="Enter your email"
+  >
+
+  <input
+    id="password"
+    type="password"
+    placeholder="Enter your password"
+  >
+
+  <button onclick="login()">
+    Login
+  </button>
+
+  <div class="footer">
+    Don't have an account?
+    <a href="register.html">
+      Register
+    </a>
+  </div>
+
+</div>
+
+<script>
+
+async function login() {
+
+  const email =
+    document.getElementById("email").value;
+
+  const password =
+    document.getElementById("password").value;
+
+  try {
+
+    const res = await fetch(
+      `${window.API_BASE}/login`,
+      {
+        method:"POST",
+
+        headers:{
+          "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+          email,
+          password
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    console.log(data);
+
+    if(data.token){
+
+      // SAVE TOKEN
+      localStorage.setItem(
+        "token",
+        data.token
+      );
+
+      // SAVE USERNAME
+      localStorage.setItem(
+        "username",
+        data.name
+      );
+
+      // REDIRECT
+      window.location.href =
+        "index.html";
+
+    } else {
+
+      alert(data.message);
+    }
+
+  } catch(err){
+
+    console.log(err);
+
+    alert("Login failed");
+  }
+}
+
+</script>
+
+</body>
+</html>
